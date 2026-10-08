@@ -1,6 +1,6 @@
 # B7-1 AI 챗봇
 
-로그인한 사용자가 웹 페이지에서 질문하면 FastAPI 서버가 OpenAI API를 호출해 답변을 보여 주고, 질문과 답변을 SQLite에 저장하는 서비스입니다. 화면은 React로 만들고 같은 FastAPI 서버가 제공합니다.
+로그인한 사용자가 웹 페이지에서 질문하면 FastAPI 서버가 네이토의 OpenAI 호환 Chat Completions API를 호출해 답변을 보여 주고, 질문과 답변을 SQLite에 저장하는 서비스입니다. 화면은 React로 만들고 같은 FastAPI 서버가 제공합니다.
 
 - 대상: 개념 설명과 질의응답이 필요한 학습자
 - 핵심 흐름: 회원가입 → 로그인 → 질문 → 답변 → 후속 질문(최근 대화 문맥 유지) → 재로그인 후 기록 조회
@@ -30,17 +30,19 @@ uv run --frozen uvicorn app.main:create_app --factory --reload
 
 | 이름 | 기본값 / 용도 |
 | --- | --- |
-| `OPENAI_API_KEY` | 필수. 서버에서만 사용하는 OpenAI API 키 |
-| `OPENAI_BASE_URL` | 선택. 미설정·빈 값은 `https://api.openai.com/v1`. Chat Completions API 지원 서버의 기본 URL(`/chat/completions` 제외) |
-| `AI_MODEL` | 필수. 계정에서 사용 가능한 OpenAI 모델 ID |
-| `AI_TIMEOUT_SECONDS` | `30`; OpenAI 호출 시간 제한(초), 자동 재시도 없음 |
+| `OPENAI_API_KEY` | 필수. 네이토에서 발급한 API 키. `.env`에만 설정 |
+| `OPENAI_BASE_URL` | `https://copa.codyssey.kr/v1`; 네이토 API 기본 URL. `/chat/completions`는 붙이지 않음 |
+| `AI_MODEL` | `gpt-5-mini`; 네이토에서 사용할 모델 ID |
+| `AI_TIMEOUT_SECONDS` | `30`; AI API 호출 시간 제한(초), 자동 재시도 없음 |
 | `DATABASE_URL` | `sqlite+aiosqlite:///./data/app.db`; Compose는 `/data/app.db` |
+
+`.env.example`에는 키 값을 넣지 않았습니다. `.env`를 만든 뒤 `OPENAI_API_KEY`에 네이토 키를 설정하세요. 변수명이 `OPENAI_*`인 것은 OpenAI 호환 API 클라이언트를 사용하기 때문이며, 이 프로젝트는 `OPENAI_BASE_URL`로 네이토 서버를 지정합니다.
 
 ## 민감정보 관리
 
 - API 키는 `.env`에만 두고 코드·문서·이미지에 넣지 않습니다. `.env.example`에는 변수 이름과 비밀이 아닌 기본값만 있습니다.
 - `.gitignore`와 `.dockerignore`가 `.env`, DB 파일, 로그를 제외합니다.
-- OpenAI 호출은 서버에서만 하며 브라우저에는 답변만 전달합니다.
+- AI API 호출은 서버에서만 하며 브라우저에는 답변만 전달합니다.
 - 로그에는 질문·답변·비밀번호를 남기지 않습니다.
 - **비밀번호는 DB에 평문으로 저장되고 HTTP로 전송됩니다. 실제로 쓰는 비밀번호를 사용하지 마세요.**
 
