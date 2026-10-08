@@ -71,7 +71,9 @@ docker compose logs --tail=100 app
 
 ## 업데이트와 DB 초기화
 
-코드를 업데이트할 때는 저장소에서 `git pull`한 뒤 `docker compose up --build -d`를 실행합니다. `docker compose down -v`는 DB 볼륨까지 삭제하므로 평소에는 사용하지 않습니다. 마이그레이션 도구가 없으므로 DB 스키마(`app/models.py`)를 바꾸면 DB를 초기화해야 하며 저장된 계정·대화가 모두 삭제됩니다. 로컬은 `data/app.db`를 지우고, 서버는 `docker compose down -v && docker compose up --build -d`를 실행합니다.
+코드를 업데이트할 때는 저장소에서 `git pull`로 최신 코드를 받습니다. 이전 배포에서 `.env`에 `AI_API_KEY`·`AI_BASE_URL`을 사용했다면 같은 값을 각각 `OPENAI_API_KEY`·`OPENAI_BASE_URL`로 옮깁니다. `AI_MODEL`은 그대로 사용합니다. 설정을 확인한 뒤 `docker compose up --build -d`를 실행합니다.
+
+`docker compose down -v`는 DB 볼륨까지 삭제하므로 평소에는 사용하지 않습니다. 마이그레이션 도구가 없으므로 DB 스키마(`app/models.py`)를 바꾸면 DB를 초기화해야 하며 저장된 계정·대화가 모두 삭제됩니다. 로컬은 `data/app.db`를 지우고, 서버는 `docker compose down -v && docker compose up --build -d`를 실행합니다.
 
 ## 운영 DB 조회
 
