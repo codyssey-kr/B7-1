@@ -1,10 +1,10 @@
 # 팀 역할 및 기여 기록
 
-확인된 팀원과 실제 작업 이력만 기록한다. `미정`·`미작성` 행은 작성 양식이며 완료 실적이 아니다.
+팀원별 담당 역할과 실제 작업 요약을 기록한다.
 
 | 팀원 | 담당 기능 | 개인 작업 요약 |
 | --- | --- | --- |
-| 미정 | 인증·세션·접근 제어 | 미작성 |
+| @parkhojeong | 인증·세션·접근 제어, 기능 통합·리뷰 | 회원가입·로그인·로그아웃과 서버 세션 인증 구현, 사용자별 접근 제어, AI 오류·계정 전환 처리 보완 ([#7](https://github.com/codyssey-kr/B7-1/pull/7), [#13](https://github.com/codyssey-kr/B7-1/pull/13)) |
 | @SeouliteParker | AI 채팅 (질문 처리·문맥 구성·OpenAI 호출·대화 로그) | AI 호출 실패 원인·소요 시간 로그 추가, 문맥 글자 수 상한(4,000자) 적용, 시스템 프롬프트를 `prompts.py`로 분리, 개발 초보자 기준 시스템 프롬프트 개선 ([#1](https://github.com/codyssey-kr/B7-1/pull/1), [#2](https://github.com/codyssey-kr/B7-1/pull/2), [#3](https://github.com/codyssey-kr/B7-1/pull/3), [#6](https://github.com/codyssey-kr/B7-1/pull/6)) |
 | solbao-dev | 프론트엔드 화면·UX 개선, 팀 Git/PR 협업 규칙 문서화 | 초보자용 화면·예시 질문, 인증·질문 입력·응답 대기·학습 기록 UX 개선; Git/PR 협업 규칙 작성 ([#4](https://github.com/codyssey-kr/B7-1/pull/4), [#5](https://github.com/codyssey-kr/B7-1/pull/5), [#13](https://github.com/codyssey-kr/B7-1/pull/13)) |
 | @1st0Groom | 배포·로그·통합 검증 | EC2 배포 구성·Docker Compose 운영, Buildx 설치·SQLite 조회 절차 문서화, 배포 검증 기록 작성 ([#16](https://github.com/codyssey-kr/B7-1/pull/16), [#17](https://github.com/codyssey-kr/B7-1/pull/17)) |

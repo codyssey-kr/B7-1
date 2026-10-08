@@ -21,11 +21,21 @@ pnpm --dir frontend check && pnpm --dir frontend build
 uv sync --frozen --extra dev && uv run --frozen ruff check app
 
 R=$(mktemp -d)   # 점검용 DB·로그·쿠키 위치
+: > "$R/pids"
 start() { # start <port> <db name> [ENV=VALUE ...]
   local port=$1 db=$2; shift 2
-  (env "$@" DATABASE_URL=sqlite+aiosqlite:///$R/$db.db \
-    uv run --frozen uvicorn app.main:create_app --factory --port $port > $R/$db.log 2>&1 &)
-  for i in $(seq 1 50); do curl -s -o /dev/null http://127.0.0.1:$port/ && return; sleep 0.2; done
+  if lsof -tiTCP:"$port" -sTCP:LISTEN >/dev/null; then
+    echo "port :$port is already in use; choose another port"; return 1
+  fi
+  env "$@" DATABASE_URL="sqlite+aiosqlite:///$R/$db.db" \
+    uv run --frozen uvicorn app.main:create_app --factory --port "$port" > "$R/$db.log" 2>&1 &
+  local server_pid=$!
+  echo "$server_pid" >> "$R/pids"
+  for i in $(seq 1 50); do
+    kill -0 "$server_pid" 2>/dev/null || break
+    curl -fsS -o /dev/null "http://127.0.0.1:$port/" 2>/dev/null && return
+    sleep 0.2
+  done
   echo "server :$port did not start"; return 1
 }
 start 8010 main                                   # 정상 서버
@@ -170,8 +180,10 @@ for s in "$key_tail" test-a test-b "배포 방법"; do grep -c -- "$s" $R/*.log 
 ## 10. 정리
 
 ```bash
-for p in 8010 8011 8012 8013; do pids=$(lsof -tiTCP:$p -sTCP:LISTEN); [ -n "$pids" ] && kill $pids; done
-sleep 2; lsof -iTCP -sTCP:LISTEN -n -P | grep -E ':801[0-3]' || echo "8010-8013 free"
+while IFS= read -r server_pid; do
+  kill "$server_pid" 2>/dev/null || true
+  wait "$server_pid" 2>/dev/null || true
+done < "$R/pids"
 rm -rf "$R"
 ```
 
